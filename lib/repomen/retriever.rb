@@ -14,12 +14,15 @@ module Repomen
   class Retriever
     include WithDefaultConfig
 
-    attr_reader :url, :path
+    attr_reader :url
+    attr_reader :path
+    attr_reader :service
 
     def initialize(url, config = default_config, &block)
-      service = Repo::Service.for(url)
-      @handler = service.handler_class.new(url, repo_dir(service), config)
-      @handler.retrieve
+      @url = url
+      @service = Repo::Service.for(url)
+      @handler = @service.handler_class.new(url, repo_dir(service), config)
+      @retrieved = @handler.retrieve
       @path = @handler.path
       if block
         block.call(@path)
@@ -27,9 +30,41 @@ module Repomen
       end
     end
 
+    def branch_name
+      @handler.branch_name
+    end
+
+    # Changes the branch of the retrieved repo.
+    # @param name [String] name of the branch
+    def change_branch(name)
+      @handler.change_branch(name)
+    end
+
     # Removes the repo from the filesystem
     def discard_repo
       @handler.discard
+    end
+
+    # Returns +true+ if the repo was retrieved successfully
+    def retrieved?
+      @retrieved
+    end
+
+    # Returns the revision of the repo.
+    def revision
+      @handler.revision
+    end
+
+    def repo_name
+      @service.repo_name
+    end
+
+    def service_name
+      @service.name
+    end
+
+    def user_name
+      @service.user_name
     end
 
     private

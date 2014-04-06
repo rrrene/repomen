@@ -14,7 +14,19 @@ module Repomen
           @path = File.join(config.work_dir, path)
         end
 
+        def branch_name
+          raise NotImplementedError
+        end
+
+        def change_branch(name)
+          raise NotImplementedError
+        end
+
         def retrieve
+          raise NotImplementedError
+        end
+
+        def revision
           raise NotImplementedError
         end
       end

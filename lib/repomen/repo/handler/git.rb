@@ -8,6 +8,20 @@ module Repomen
       # @todo Uses git's CLI, since Rugged is not playing nice GitHub
       #   Why is that?
       class Git < Base
+        def branch_name
+          branch = nil
+          in_dir do
+            branch = git 'rev-parse', '--abbrev-ref', 'HEAD'
+          end
+          branch.strip
+        end
+
+        def change_branch(name)
+          in_dir do
+            git :checkout, name, '--quiet'
+          end
+        end
+
         # Removes the repo from the filesystem
         # @return [void]
         def discard
@@ -22,6 +36,15 @@ module Repomen
           else
             clone_repo
           end
+          $?.success?
+        end
+
+        def revision
+          rev = nil
+          in_dir do
+            rev = git 'rev-parse', 'HEAD'
+          end
+          rev.strip
         end
 
         private
@@ -30,9 +53,13 @@ module Repomen
           `git #{args.join(' ')}`
         end
 
+        def in_dir(dir = @path, &block)
+          Dir.chdir(dir, &block)
+        end
+
         def clone_repo
           FileUtils.mkdir_p path
-          git :clone, url, path, '--depth=1 --quiet'
+          git(:clone, url, path, '--quiet')
         end
 
         def git_options
@@ -48,14 +75,13 @@ module Repomen
         end
 
         def pull
-          old_dir = Dir.pwd
-          Dir.chdir path
-          git :pull, '--quiet'
-          Dir.chdir old_dir
+          in_dir do
+            git(:pull, '--quiet')
+          end
         end
 
         def repo_exists?
-          File.exists?(path) && File.directory?(path)
+          File.exist?( File.join(path, ".git") )
         end
       end
     end
