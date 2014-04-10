@@ -21,6 +21,7 @@ module Repomen
             git :checkout, name, '--quiet'
           end
         end
+        alias :checkout_revision :change_branch
 
         # Removes the repo from the filesystem
         # @return [void]

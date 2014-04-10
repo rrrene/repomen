@@ -39,6 +39,7 @@ module Repomen
     def change_branch(name)
       @handler.change_branch(name)
     end
+    alias :checkout_revision :change_branch
 
     # Removes the repo from the filesystem
     def discard_repo
