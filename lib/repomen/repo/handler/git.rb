@@ -1,6 +1,8 @@
 require 'fileutils'
 
 module Repomen
+  HandlerError = Class.new(RuntimeError)
+
   module Repo
     module Handler
       # Handler for git repositories
@@ -11,14 +13,18 @@ module Repomen
         def branch_name
           branch = nil
           in_dir do
-            branch = git 'rev-parse', '--abbrev-ref', 'HEAD'
+            branch = git(:'rev-parse', '--abbrev-ref', 'HEAD')
           end
-          branch.strip
+          branch
         end
 
-        def change_branch(name)
+        def change_branch(name, update_branch = false)
           in_dir do
-            git :checkout, name, '--quiet'
+            output = git(:checkout, name, '--quiet')
+            unless $?.success?
+              raise HandlerError.new("checkout failed: #{name.inspect}")
+            end
+            pull if update_branch
           end
         end
         alias :checkout_revision :change_branch
@@ -31,11 +37,13 @@ module Repomen
 
         # Retrieves the repo from +@url+
         # @return [void]
-        def retrieve
+        def retrieve(branch_name = "master")
           if repo_exists?
+            change_branch(branch_name)
             update_repo
           else
             clone_repo
+            change_branch(branch_name) if $?.success?
           end
           $?.success?
         end
@@ -43,15 +51,23 @@ module Repomen
         def revision
           rev = nil
           in_dir do
-            rev = git 'rev-parse', 'HEAD'
+            rev = git(:'rev-parse', 'HEAD')
           end
-          rev.strip
+          rev
+        end
+
+        def tag
+          output = nil
+          in_dir do
+            output = git(:describe, '--exact-match', 'HEAD')
+          end
+          output
         end
 
         private
 
         def git(*args)
-          `git #{args.join(' ')}`
+          `git #{args.join(' ')}`.chomp
         end
 
         def in_dir(dir = @path, &block)

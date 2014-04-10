@@ -29,6 +29,10 @@ module Repomen
         def revision
           raise NotImplementedError
         end
+
+        def tag
+          raise NotImplementedError
+        end
       end
     end
   end

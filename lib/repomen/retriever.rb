@@ -36,8 +36,11 @@ module Repomen
 
     # Changes the branch of the retrieved repo.
     # @param name [String] name of the branch
-    def change_branch(name)
-      @handler.change_branch(name)
+    def change_branch(name, update_branch = false)
+      @handler.change_branch(name, update_branch)
+      true
+    rescue Repomen::HandlerError
+      false
     end
     alias :checkout_revision :change_branch
 
@@ -54,6 +57,11 @@ module Repomen
     # Returns the revision of the repo.
     def revision
       @handler.revision
+    end
+
+    # Returns the tag of the repo.
+    def tag
+      @handler.tag
     end
 
     def repo_name
