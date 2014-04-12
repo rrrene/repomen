@@ -56,7 +56,19 @@ module Repomen
 
     # Returns the revision of the repo.
     def revision
-      @handler.revision
+      @handler.revision_info['commit']
+    end
+
+    def revision_author_name
+      @handler.revision_info['name']
+    end
+
+    def revision_author_email
+      @handler.revision_info['email']
+    end
+
+    def revision_author_date
+      @handler.revision_info['date']
     end
 
     # Returns the tag of the repo.

@@ -48,12 +48,8 @@ module Repomen
           $?.success?
         end
 
-        def revision
-          rev = nil
-          in_dir do
-            rev = git(:'rev-parse', 'HEAD')
-          end
-          rev
+        def revision_info
+          @revision_info ||= YAML.load(git_show)
         end
 
         def tag
@@ -65,6 +61,18 @@ module Repomen
         end
 
         private
+
+        def git_show
+          info = nil
+          in_dir do
+            info = git(:show, '--format="name: %an%nemail: %ae%ndate: %cd%ncommit: %H"')
+          end
+          lines = []
+          info.lines.each do |l|
+            return lines.join("\n") if l.strip.empty?
+            lines << l
+          end
+        end
 
         def git(*args)
           `git #{args.join(' ')}`.chomp
