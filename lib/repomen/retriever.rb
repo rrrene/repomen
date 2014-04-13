@@ -67,7 +67,7 @@ module Repomen
       @handler.revision_info['email']
     end
 
-    def revision_author_date
+    def revision_authored_at
       @handler.revision_info['date']
     end
 
