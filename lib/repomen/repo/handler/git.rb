@@ -63,9 +63,16 @@ module Repomen
         private
 
         def git_show
+          format = [
+            'name: %an',
+            'email: %ae',
+            'date: %cd',
+            'commit: %H',
+            'message: %s',
+          ].join('%n')
           info = nil
           in_dir do
-            info = git(:show, '--format="name: %an%nemail: %ae%ndate: %cd%ncommit: %H"')
+            info = git(:show, '--format="'+format+'"')
           end
           lines = []
           info.lines.each do |l|

@@ -59,6 +59,10 @@ module Repomen
       @handler.revision_info['commit']
     end
 
+    def revision_message
+      @handler.revision_info['message']
+    end
+
     def revision_author_name
       @handler.revision_info['name']
     end
