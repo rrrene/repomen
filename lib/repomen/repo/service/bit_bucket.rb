@@ -2,7 +2,7 @@ module Repomen
   module Repo
     module Service
       class BitBucket < Base
-        SERVICE_REGEXP = /(https:\/\/|git\@)bitbucket.org[\:\/]([^\/]+)\/([^\.]+)\.git$/
+        SERVICE_REGEXP = /(https:\/\/|git\@)bitbucket.org[\:\/]([^\/]+)\/(.+)\.git$/
 
         # @param url [String]
         def applicable?
