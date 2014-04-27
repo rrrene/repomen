@@ -16,6 +16,14 @@ describe ::Repomen::Repo::Handler::Git do
       handler.retrieve
       assert File.exists?(handler.path)
       assert File.directory?(handler.path)
+
+      assert handler.revision_info
+      info = handler.revision_info
+      refute info["name"].nil?
+      refute info["email"].nil?
+      refute info["date"].nil?
+      refute info["commit"].nil?
+      refute info["message"].nil?
     end
 
     it "should recognize a Github URL via https" do

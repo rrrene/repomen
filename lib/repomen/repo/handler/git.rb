@@ -49,7 +49,7 @@ module Repomen
         end
 
         def revision_info
-          @revision_info ||= YAML.load(git_show)
+          @revision_info ||= parse_revision_info(git_show)
         end
 
         def tag
@@ -70,15 +70,11 @@ module Repomen
             'commit: %H',
             'message: %s',
           ].join('%n')
-          info = nil
+          output = nil
           in_dir do
-            info = git(:show, '--format="'+format+'"')
+            output = git(:show, '--format="'+format+'"')
           end
-          lines = []
-          info.lines.each do |l|
-            return lines.join("\n") if l.strip.empty?
-            lines << l
-          end
+          output
         end
 
         def git(*args)
@@ -100,6 +96,16 @@ module Repomen
             options << '--depth=1'
           end
           options.join(' ')
+        end
+
+        def parse_revision_info(text)
+          info = {}
+          text.lines.each do |str|
+            break if str.strip.empty?
+            list = str.partition(':')
+            info[list.first] = list.last
+          end
+          info
         end
 
         def update_repo
