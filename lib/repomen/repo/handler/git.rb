@@ -55,7 +55,7 @@ module Repomen
         def tag
           output = nil
           in_dir do
-            output = git(:describe, '--exact-match', 'HEAD')
+            output = git(:describe, '--tags --exact-match', 'HEAD')
           end
           output
         end
