@@ -102,7 +102,7 @@ module Repomen
           info = {}
           text.lines.each do |str|
             break if str.strip.empty?
-            list = str.partition(':')
+            list = str.partition(': ')
             info[list.first] = list.last
           end
           info
