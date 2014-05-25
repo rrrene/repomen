@@ -23,6 +23,7 @@ describe ::Repomen::Repo::Handler::Git do
       refute info["email"].nil?
       refute info["date"].nil?
       refute info["commit"].nil?
+      assert info["commit"] == info["commit"].strip
       refute info["message"].nil?
     end
 
