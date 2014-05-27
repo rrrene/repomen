@@ -103,7 +103,9 @@ module Repomen
           text.lines.each do |str|
             break if str.strip.empty?
             list = str.partition(': ')
-            info[list.first] = list.last.gsub(/\n$/, '')
+            info[list.first] = list.last
+              .encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+              .gsub(/\n$/, '')
           end
           info
         end
