@@ -37,13 +37,17 @@ module Repomen
 
         # Retrieves the repo from +@url+
         # @return [void]
-        def retrieve(branch_name = "master")
+        def retrieve(branch_name = nil)
           if repo_exists?
-            change_branch(branch_name)
+            unless branch_name.nil?
+              change_branch(branch_name)
+            end
             update_repo
           else
             clone_repo
-            change_branch(branch_name) if $?.success?
+            if $?.success? && !branch_name.nil?
+              change_branch(branch_name)
+            end
           end
           $?.success?
         end
