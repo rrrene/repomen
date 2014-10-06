@@ -2,7 +2,7 @@ module Repomen
   module Repo
     module Service
       class GitHub < Base
-        SERVICE_REGEXP = /(https:\/\/|git\@)github.com[\:\/]([^\/]+)\/(.+)\.git$/
+        SERVICE_REGEXP = /(https:\/\/|git:\/\/|git\@)github.com[\:\/]([^\/]+)\/(.+)\.git$/
 
         # @param url [String]
         def applicable?

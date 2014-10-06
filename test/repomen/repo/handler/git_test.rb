@@ -11,20 +11,21 @@ describe ::Repomen::Repo::Handler::Git do
 
   describe "#retrieve" do
     it "should recognize a Github URL via git" do
-      url = "git@github.com:octocat/Hello-World.git"
-      handler = described_class.new(url, dir)
-      handler.retrieve
-      assert File.exists?(handler.path)
-      assert File.directory?(handler.path)
+      %w(git@github.com:octocat/Hello-World.git git://github.com/octocat/Hello-World.git).each do |url|
+        handler = described_class.new(url, dir)
+        handler.retrieve
+        assert File.exists?(handler.path)
+        assert File.directory?(handler.path)
 
-      assert handler.revision_info
-      info = handler.revision_info
-      refute info["name"].nil?
-      refute info["email"].nil?
-      refute info["date"].nil?
-      refute info["commit"].nil?
-      assert info["commit"] == info["commit"].strip
-      refute info["message"].nil?
+        assert handler.revision_info
+        info = handler.revision_info
+        refute info["name"].nil?
+        refute info["email"].nil?
+        refute info["date"].nil?
+        refute info["commit"].nil?
+        assert info["commit"] == info["commit"].strip
+        refute info["message"].nil?
+      end
     end
 
     it "should recognize a Github URL via https" do
