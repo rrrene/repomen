@@ -26,4 +26,12 @@ describe ::Repomen::Repo::Service::GitHub do
     assert_equal "octocat", service.user_name
     assert_equal "Hello-World", service.repo_name
   end
+
+  it "should recognize a Github URL via https w/o .git extension" do
+    url = "https://github.com/octocat/Hello-World"
+    service = described_class.new(url)
+    assert service.applicable?
+    assert_equal "octocat", service.user_name
+    assert_equal "Hello-World", service.repo_name
+  end
 end
